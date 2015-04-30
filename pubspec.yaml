@@ -1,0 +1,5 @@
+name: node_io
+version: 1.0.0
+description: Build apps using I/O in Dart, execute in node.js.
+dev_dependencies:
+  test: ">=0.12.0 <0.13.0"

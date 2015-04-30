@@ -1,6 +1,8 @@
 # Don’t commit the following directories created by pub.
 .buildlog
+.idea/
 .pub/
+pubspec.lock
 build/
 packages
 
