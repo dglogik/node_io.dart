@@ -5,3 +5,4 @@ library node_io;
 
 export 'file.dart';
 export 'http.dart';
+export 'common.dart';
