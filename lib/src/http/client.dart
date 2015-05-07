@@ -1,6 +1,9 @@
 part of node_io.http;
 
 class HttpClient {
+  static const int DEFAULT_HTTP_PORT = 80;
+  static const int DEFAULT_HTTPS_PORT = 443;
+
   HttpClient();
 
   static String findProxyFromEnvironment(Uri url, {Map<String, String> environment}) {
@@ -70,12 +73,10 @@ class HttpClient {
 
   Future<HttpClientRequest> post(String host, int port, String path) {
     return null;
-
   }
 
   Future<HttpClientRequest> postUrl(Uri url) {
-    return null;
-
+    return post(url.host, url.port, url.path);
   }
 
   Future<HttpClientRequest> put(String host, int port, String path) {

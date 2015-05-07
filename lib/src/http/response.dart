@@ -1,6 +1,6 @@
 part of node_io.http;
 
-class HttpClientResponse implements Stream<List<int>> {
+abstract class HttpClientResponse implements Stream<List<int>> {
 
   int get statusCode;
   int get contentLength;
@@ -20,12 +20,8 @@ class HttpClientResponse implements Stream<List<int>> {
 
   HttpConnectionInfo get connectionInfo;
   
-  Future<HttpClientResponse> redirect([String method, Uri url, bool followLoops]) {
+  Future<HttpClientResponse> redirect([String method, Uri url, bool followLoops]);
 
-  }
-
-  Future<Socket> detachSocket() {
-
-  }
+  Future<Socket> detachSocket();
 
 }
