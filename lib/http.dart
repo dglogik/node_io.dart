@@ -1,7 +1,10 @@
 library node_io.http;
 
+import 'package:node_io/util.dart';
+
 import 'dart:async';
 import 'dart:convert';
+import 'dart:js';
 import 'dart:collection';
 import 'dart:typed_data';
 
@@ -15,6 +18,9 @@ part 'src/http/request.dart';
 
 part 'src/http/client.dart';
 part 'src/http/server.dart';
+
+JsObject _http = require('http');
+JsObject _https = require('https');
 
 abstract class HttpStatus {
   static const int CONTINUE = 100;
@@ -250,6 +256,10 @@ abstract class Cookie {
   }
 
   String toString();
+}
+
+abstract class HttpClientCredentials {
+
 }
 
 class HttpException implements Exception {

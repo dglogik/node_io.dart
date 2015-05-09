@@ -74,7 +74,7 @@ class File extends FileSystemEntity {
     var completer = new Completer<FileStat>();
 
     _fs.callMethod("readFile", [_path, (error, JsObject buf) {
-      completer.complete(_bufToList(buf));
+      completer.complete(bufToList(buf));
     }]);
 
     return completer.future;
@@ -82,7 +82,7 @@ class File extends FileSystemEntity {
 
   List<int> readAsBytesSync() {
     var buf = _fs.callMethod("readFileSync", [_path]);
-    return _bufToList(buf);
+    return bufToList(buf);
   }
 
   Future<List<String>> readAsLines({Encoding encoding: UTF8}) {
@@ -117,7 +117,7 @@ class File extends FileSystemEntity {
 
     var completer = new Completer<FileStat>();
 
-    _fs.callMethod("writeFile", [_path, _listToBuf(bytes), (error) {
+    _fs.callMethod("writeFile", [_path, listToBuf(bytes), (error) {
       completer.complete(this);
     }]);
 
@@ -128,7 +128,7 @@ class File extends FileSystemEntity {
     // TODO: FileMode.APPEND
     // TODO: flush
 
-    _fs.callMethod("writeFileSync", [_path, _listToBuf(bytes)]);
+    _fs.callMethod("writeFileSync", [_path, listToBuf(bytes)]);
   }
 
   Future<File> writeAsString(String contents, {FileMode mode: FileMode.WRITE, Encoding encoding: UTF8, bool flush: false}) {
