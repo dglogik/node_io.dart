@@ -91,6 +91,15 @@ abstract class HttpConnectionInfo {
   int get remotePort;
 }
 
+class HttpConnectionsInfo {
+  int active;
+  int closing;
+  int idle;
+  int total;
+
+  HttpConnectionsInfo._(this.active, this.closing, this.idle, this.total);
+}
+
 abstract class HttpStatus {
   static const int CONTINUE = 100;
   static const int SWITCHING_PROTOCOLS = 101;

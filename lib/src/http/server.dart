@@ -2,18 +2,39 @@ part of node_io.http;
 
 class HttpServer implements Stream<List<int>> {
 
-  InternetAddress get address;
+  final JsObject _server;
+
+  final InternetAddress address;
+
+  final int port;
+
   bool autoCompress;
   HttpHeaders get defaultResponseHeaders;
   Duration idleTimeout;
-  int get port;
   String serverHeader;
   bool get isBroadcast { return true; }
   set sessionTimeout(int timeout) {}
 
-  static Future<HttpServer> bind(address, int port, {int backlog: 0, bool v6Only: false, bool shared: false}) {
-    return null;
-  }
+  HttpServer._(this.address, this.port, this._server);
+
+  static Future<HttpServer> bind(address, int port, {int backlog: 0, bool v6Only: false, bool shared: false}) =>
+    // TODO v6Only, shared
+    new Future(() {
+      if(!(address is InternetAddress)) {
+        address = InternetAddress.lookup(address);
+      }
+
+      return new Future.value();
+    }).then((_) {
+      var completer = new Completer();
+
+      var server = _http.callMethod("createServer");
+      server.callMethod("listen", [port, address.address, backlog, () {
+        completer.complete(new HttpServer._(address, port, server));
+      }]);
+
+      return completer.future;
+    });
 
   static Future<HttpServer> bindSecure(address, int port, {int backlog: 0, bool v6Only: false, String certificateName, bool requestClientCertificate: false, bool shared: false}) {
     return null;
