@@ -11,7 +11,6 @@ class HttpServer implements Stream<List<int>> {
   bool get isBroadcast { return true; }
   set sessionTimeout(int timeout) {}
 
-
   static Future<HttpServer> bind(address, int port, {int backlog: 0, bool v6Only: false, bool shared: false}) {
     return null;
   }

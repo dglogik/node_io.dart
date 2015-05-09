@@ -7,7 +7,7 @@ class HttpClient {
   HttpClient();
 
   static String findProxyFromEnvironment(Uri url, {Map<String, String> environment}) {
-
+    return null;
   }
 
   void addCredentials(Uri url, String realm, HttpClientCredentials credentials) {
@@ -102,6 +102,5 @@ class HttpClient {
 
   Future<HttpClientRequest> putUrl(Uri url) {
     return null;
-
   }
 }

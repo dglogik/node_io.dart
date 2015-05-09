@@ -6,26 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
 
-// JsObject _dns = require('dns');
-
-abstract class InternetAddress {
-
-  List<int> get rawAddress;
-  InternetAddressType type;
-
-  String get address;
-  String get host;
-
-  bool get isLinkLocal;
-  bool get isLoopback;
-  bool get isMulticast;
-
-  InternetAddress(String address);
-
-  static Future<List<InternetAddress>> lookup(String host, {InternetAddressType type: InternetAddressType.ANY});
-
-  Future<InternetAddress> reverse();
-}
+JsObject _dns = require('dns');
 
 abstract class IOSink implements StringSink, StreamSink<List<int>> {
 
@@ -53,6 +34,10 @@ abstract class IOSink implements StringSink, StreamSink<List<int>> {
   void writeln([Object obj=""]);
 }
 
+abstract class SocketOption {
+  // TODO
+}
+
 abstract class Socket implements IOSink, Stream<List<int>> {
   Encoding encoding;
 
@@ -68,6 +53,74 @@ abstract class Socket implements IOSink, Stream<List<int>> {
 
   void destroy();
   bool setOption(SocketOption option, bool enabled);
+}
+
+abstract class InternetAddress {
+
+  List<int> get rawAddress;
+  InternetAddressType type;
+
+  String get address;
+  String get host;
+
+  bool get isLinkLocal;
+  bool get isLoopback;
+  bool get isMulticast;
+
+  factory InternetAddress(String address) {
+    return new _InternetAddress(address);
+  }
+
+  static Future<List<InternetAddress>> lookup(String host, {InternetAddressType type: InternetAddressType.ANY}) {
+    var completer = new Completer<List<InternetAddress>>();
+    var args = [host];
+    if(type == InternetAddressType.IP_V4)
+      args.add(4);
+    if(type == InternetAddressType.IP_V6)
+      args.add(6);
+    args.add((err, address, family) {
+      completer.complete(<InternetAddress>[]..add(new _InternetAddress(address)));
+    });
+
+    _dns.callMethod("lookup", args);
+    return completer.future;
+  }
+
+  Future<InternetAddress> reverse();
+}
+
+class _InternetAddress implements InternetAddress {
+
+  final String address;
+
+  String get host {
+  }
+
+  List<int> get rawAddress {
+
+  }
+
+  InternetAddressType type() {
+
+  }
+
+  bool get isLinkLocal {
+
+  }
+
+  bool get isLoopback {
+
+  }
+
+  bool get isMulticast {
+
+  }
+
+  _InternetAddress(this.address);
+
+  Future<InternetAddress> reverse() {
+
+  }
 }
 
 class InternetAddressType {
