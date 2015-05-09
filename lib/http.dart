@@ -22,6 +22,75 @@ part 'src/http/server.dart';
 JsObject _http = require('http');
 JsObject _https = require('https');
 
+abstract class HeaderValue {
+  Map<String, String> get parameters;
+
+  String get value;
+
+  factory HeaderValue([String value="", Map<String, String> parameters]) {
+    return new _HeaderValue(value, parameters);
+  }
+
+  static HeaderValue parse(String value, {parameterSeparator: ";", preserveBackslash: false}) {
+    return _HeaderValue.parse(value, parameterSeparator: parameterSeparator, preserveBackslash: preserveBackslash);
+  }
+
+  String toString();
+}
+
+abstract class ContentType implements HeaderValue {
+  static final TEXT = new ContentType("text", "plain", charset: "utf-8");
+  static final HTML = new ContentType("text", "html", charset: "utf-8");
+  static final JSON = new ContentType("application", "json", charset: "utf-8");
+  static final BINARY = new ContentType("application", "octet-stream");
+
+  String get charset;
+  String get mimeType;
+  String get primaryType;
+  String get subType;
+
+  factory ContentType(String primaryType, String subType, {String charset, Map<String, String> parameters}) {
+    return new _ContentType(primaryType, subType, charset, parameters);
+  }
+
+  static ContentType parse(String value) {
+    return _ContentType.parse(value);
+  }
+}
+
+abstract class Cookie {
+  DateTime expires;
+
+  String domain;
+  String name;
+  String path;
+  String value;
+
+  int maxAge;
+
+  bool httpOnly;
+  bool secure;
+
+  factory Cookie([String name, String value]) {
+    return new _Cookie(name, value);
+  }
+
+  factory Cookie.fromSetCookieValue(String value) {
+    return new _Cookie.fromSetCookieValue(value);
+  }
+
+  String toString();
+}
+
+abstract class HttpClientCredentials {}
+
+abstract class HttpConnectionInfo {
+  InternetAddress get remoteAddress;
+
+  int get localPort;
+  int get remotePort;
+}
+
 abstract class HttpStatus {
   static const int CONTINUE = 100;
   static const int SWITCHING_PROTOCOLS = 101;
@@ -196,70 +265,6 @@ abstract class HttpHeaders {
   void forEach(void f(String name, List<String> values));
   void noFolding(String name);
   void clear();
-}
-
-abstract class HeaderValue {
-  Map<String, String> get parameters;
-
-  String get value;
-
-  factory HeaderValue([String value="", Map<String, String> parameters]) {
-    return new _HeaderValue(value, parameters);
-  }
-
-  static HeaderValue parse(String value, {parameterSeparator: ";", preserveBackslash: false}) {
-    return _HeaderValue.parse(value, parameterSeparator: parameterSeparator, preserveBackslash: preserveBackslash);
-  }
-
-  String toString();
-}
-
-abstract class ContentType implements HeaderValue {
-  static final TEXT = new ContentType("text", "plain", charset: "utf-8");
-  static final HTML = new ContentType("text", "html", charset: "utf-8");
-  static final JSON = new ContentType("application", "json", charset: "utf-8");
-  static final BINARY = new ContentType("application", "octet-stream");
-
-  String get charset;
-  String get mimeType;
-  String get primaryType;
-  String get subType;
-
-  factory ContentType(String primaryType, String subType, {String charset, Map<String, String> parameters}) {
-    return new _ContentType(primaryType, subType, charset, parameters);
-  }
-
-  static ContentType parse(String value) {
-    return _ContentType.parse(value);
-  }
-}
-
-abstract class Cookie {
-  DateTime expires;
-
-  String domain;
-  String name;
-  String path;
-  String value;
-
-  int maxAge;
-
-  bool httpOnly;
-  bool secure;
-
-  factory Cookie([String name, String value]) {
-    return new _Cookie(name, value);
-  }
-
-  factory Cookie.fromSetCookieValue(String value) {
-    return new _Cookie.fromSetCookieValue(value);
-  }
-
-  String toString();
-}
-
-abstract class HttpClientCredentials {
-
 }
 
 class HttpException implements Exception {
