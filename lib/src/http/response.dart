@@ -33,49 +33,44 @@ abstract class HttpClientResponse implements Stream<List<int>> {
 
 class _HttpClientResponse extends Stream implements HttpClientResponse {
 
-  List<List> _data = <List>[];
+  final StreamController<List> _controller = new StreamController<List>();
 
-  Completer<List> _first = new Completer<List>();
-  Completer<List> _last = new Completer<List>();
-
-  final JsObject _jsRes;
+  final JsObject _res;
 
   final String _reqMethod;
 
   final List<RedirectInfo> redirects;
   final HttpHeaders headers;
 
-  Future<List> get first => _first.future;
-  Future<List> get last => _last.future;
+  Future<List> get first =>  _controller.stream.first;
+  Future<List> get last => _controller.stream.last;
 
-  String get reasonPhrase => _jsRes["statusMessage"];
+  String get reasonPhrase => _res["statusMessage"];
 
-  int get statusCode => _jsRes["statusCode"];
+  int get statusCode => _res["statusCode"];
   int get contentLength => headers.contentLength;
 
-  _HttpClientResponse(JsObject jsRes, this._reqMethod) :
-      _jsRes = jsRes,
+  _HttpClientResponse(JsObject res, this._reqMethod) :
+      _res = res,
       redirects = <RedirectInfo>[],
-      headers = new _HttpHeaders(jsRes["httpVersion"]) {
+      headers = new _HttpHeaders(res["httpVersion"]) {
 
-    Map<String, dynamic> map = JSON.decode(context["JSON"].callMethod('stringify', _jsRes["headers"]));
+    Map<String, dynamic> map = JSON.decode(context["JSON"].callMethod('stringify', _res["headers"]));
     map.forEach((key, value) {
       headers.add(key, value);
     });
 
     onData(buf) {
-      _data.add(bufToList(buf));
-      if(_data.length == 1)
-        _first.complete(_data[0]);
-      _jsRes.callMethod("removeListener", ["data", onData]);
+      _controller.add(bufToList(buf));
     }
-    _jsRes.callMethod("on", ["data", onData]);
+    _res.callMethod("on", ["data", onData]);
 
     onEnd() {
-      _last.complete(_data.last);
-      _jsRes.callMethod("removeListener", ["end", onEnd]);
+      _controller.close();
+      _res.callMethod("removeListener", ["data", onData]);
+      _res.callMethod("removeListener", ["end", onEnd]);
     }
-    _jsRes.callMethod("on", ["end", onEnd]);
+    _res.callMethod("on", ["end", onEnd]);
   }
 
   bool get isRedirect {
@@ -90,8 +85,8 @@ class _HttpClientResponse extends Stream implements HttpClientResponse {
     return false;
   }
 
-  StreamSubscription<List> listen(void onData(List event), {Function onError, void onDone(), bool cancelOnError}) {
-    return null;
+  StreamSubscription<List> listen(void onData(List event), {Function onError, void onDone(), bool cancelOnError : false}) {
+    return _controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
   bool get persistentConnection {
@@ -102,7 +97,7 @@ class _HttpClientResponse extends Stream implements HttpClientResponse {
     return null;
   }
 
-  X509Certificate get certificate {
+  X509Certificate get certificate { 
     return null;
   }
 

@@ -27,103 +27,8 @@ abstract class WebSocket implements StreamSink, Stream {
   }
 }
 
-class _WebSocketSub implements StreamSubscription {
-
-  JsObject _socket;
-
-  final Completer _cancel = new Completer();
-  final List _buffer = <dynamic>[];
-
-  Future _done;
-
-  Function _onData;
-  Function _onError;
-  Function _onDone;
-
-  bool _cancelOnError;
-  bool _isPaused = false;
-
-  bool get isPaused => _isPaused;
-
-  _WebSocketSub(this._socket, this._done, [this._onData, this._onError, this._onDone, this._cancelOnError = false]) {
-    this._done.then((_) => this.cancel());
-
-    onData(data, _) {
-      if(!(data is String)) {
-        data = bufToList(data);
-      }
-      if(_isPaused) {
-        _buffer.add(data);
-        return;
-      }
-      _onData(data);
-    }
-
-    _socket.callMethod("on", ["data", onData]);
-
-    onError(error) {
-      _onError(error);
-      if(_cancelOnError)
-        this.cancel();
-    }
-
-    _socket.callMethod("on", ["error", onError]);
-
-    _cancel.future.then((_) {
-      _socket.callMethod("removeListener", ["data", onData]);
-      _socket.callMethod("removeListener", ["error", onError]);
-      _socket = null;
-      _done = null;
-    });
-  }
-
-  void onData(void handleData(data)) {
-    _onData = handleData;
-  }
-
-  void onError(Function handleError) {
-    _onError = handleError;
-  }
-
-  void onDone(void handleDone()) {
-    _onDone = handleDone;
-  }
-
-  void pause([Future resumeSignal]) {
-    if(_isPaused) return;
-    _isPaused = true;
-
-    if(resumeSignal != null)
-      resumeSignal.then((_) => resume());
-  }
-
-  Future cancel() {
-    _cancel.complete();
-    return null;
-  }
-
-  void resume() {
-    if(!_isPaused) return;
-    _isPaused = false;
-
-    if(_buffer.length > 0) {
-      for(var event in _buffer)
-        _onData(event);
-      _buffer.removeRange(0, _buffer.length - 1);
-    }
-  }
-
-  Future asFuture([futureValue]) {
-    var completer = new Completer();
-
-    _cancel.future.then((_) => completer.complete());
-    // TODO: error
-
-    return completer.future;
-  }
-}
-
 class _WebSocket extends Stream implements WebSocket {
+  final StreamController<List> _controller = new StreamController<List>();
 
   final JsObject _socket;
 
@@ -136,16 +41,37 @@ class _WebSocket extends Stream implements WebSocket {
 
   Future get done => _done.future;
 
-  int get closeCode => _closeCode;
-  String get closeReason => _closeReason;
-
   String get protocol => _socket["protocol"];
-
   String get extensions => context["Object"].callMethod("keys", [_socket["extensions"]]).join("; ");
+
+  String get closeReason => _closeReason;
+  int get closeCode => _closeCode;
 
   int get readyState => _socket["readyState"];
 
-  _WebSocket(this._socket);
+  _WebSocket(this._socket) {
+    _done.future.then((_) => _controller.close());
+
+    onData(data) {
+      if(!(data is String)) {
+        data = bufToList(data);
+      }
+      _controller.add(data);
+    }
+
+    _socket.callMethod("on", ["data", onData]);
+
+    onError(error) {
+      _controller.addError(error);
+    }
+
+    _socket.callMethod("on", ["error", onError]);
+
+    _done.future.then((_) {
+      _socket.callMethod("removeListener", ["data", onData]);
+      _socket.callMethod("removeListener", ["error", onError]);
+    });
+  }
 
   static Future<WebSocket> connect(String url, Iterable<String> protocols, Map<String, dynamic> headers) {
     var completer = new Completer();
@@ -167,7 +93,7 @@ class _WebSocket extends Stream implements WebSocket {
   }
 
   StreamSubscription listen(void onData(message), {Function onError, void onDone(), bool cancelOnError}) {
-    return new _WebSocketSub(_socket, done, onData, onError, onDone, cancelOnError);
+    return _controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
   Future addStream(Stream stream) {
@@ -196,8 +122,8 @@ class _WebSocket extends Stream implements WebSocket {
     return null;
   }
 
-  void addError(errorEvent, [StackTrace stackTrace]) {
-    // TODO
+  void addError(error, [StackTrace stackTrace]) {
+    _controller.addError(error, stackTrace);
   }
 
 }
