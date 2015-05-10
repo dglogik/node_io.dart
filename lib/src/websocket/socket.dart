@@ -34,6 +34,8 @@ class _WebSocketSub implements StreamSubscription {
   final Completer _cancel = new Completer();
   final List _buffer = <dynamic>[];
 
+  Future _done;
+
   Function _onData;
   Function _onError;
   Function _onDone;
@@ -43,8 +45,19 @@ class _WebSocketSub implements StreamSubscription {
 
   bool get isPaused => _isPaused;
 
-  _WebSocketSub(this._socket, [this._onData, this._onError, this._onDone, this._cancelOnError = false]) {
-    onData(data, _) => _onData(bufToList(data));
+  _WebSocketSub(this._socket, this._done, [this._onData, this._onError, this._onDone, this._cancelOnError = false]) {
+    this._done.then((_) => this.cancel());
+
+    onData(data, _) {
+      if(!(data is String)) {
+        data = bufToList(data);
+      }
+      if(_isPaused) {
+        _buffer.add(data);
+        return;
+      }
+      _onData(data);
+    }
 
     _socket.callMethod("on", ["data", onData]);
 
@@ -60,6 +73,7 @@ class _WebSocketSub implements StreamSubscription {
       _socket.callMethod("removeListener", ["data", onData]);
       _socket.callMethod("removeListener", ["error", onError]);
       _socket = null;
+      _done = null;
     });
   }
 
@@ -100,8 +114,12 @@ class _WebSocketSub implements StreamSubscription {
   }
 
   Future asFuture([futureValue]) {
-    // TODO
-    return null;
+    var completer = new Completer();
+
+    _cancel.future.then((_) => completer.complete());
+    // TODO: error
+
+    return completer.future;
   }
 }
 
@@ -131,9 +149,9 @@ class _WebSocket extends Stream implements WebSocket {
 
   static Future<WebSocket> connect(String url, Iterable<String> protocols, Map<String, dynamic> headers) {
     var completer = new Completer();
-    var socket = new JsObject(_ws, [url, protocols, {
-      "headers": headers
-    }]);
+    var socket = new JsObject(_ws, [url, protocols, new JsObject.jsify({
+      "headers": new JsObject.jsify(headers)
+    })]);
 
     socket.callMethod("on", ["open", () {
       completer.complete(new _WebSocket(socket));
@@ -143,16 +161,31 @@ class _WebSocket extends Stream implements WebSocket {
   }
 
   void add(data) {
-    _socket.callMethod("send", [listToBuf(data)]);
+    if(!(data is String))
+      data = listToBuf(data);
+    _socket.callMethod("send", [data]);
   }
 
   StreamSubscription listen(void onData(message), {Function onError, void onDone(), bool cancelOnError}) {
-    return new _WebSocketSub(_socket, onData, onError, onDone, cancelOnError);
+    return new _WebSocketSub(_socket, done, onData, onError, onDone, cancelOnError);
   }
 
   Future addStream(Stream stream) {
-    // TODO
-    return null;
+    var completer = new Completer();
+
+    _onDone([error, StackTrace stackTrace]) {
+      if (error != null) {
+        completer.completeError(error, stackTrace);
+      } else {
+        completer.complete(this);
+      }
+    }
+
+    var subscription = stream.listen((data) {
+      this.add(data);
+    }, onDone: _onDone, onError: _onDone, cancelOnError: true);
+
+    return completer.future;
   }
 
   Future close([int code, String reason]) {
@@ -160,6 +193,7 @@ class _WebSocket extends Stream implements WebSocket {
     _closeReason = reason;
     _closeCode = code;
     _done.complete();
+    return null;
   }
 
   void addError(errorEvent, [StackTrace stackTrace]) {
