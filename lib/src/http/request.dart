@@ -15,7 +15,7 @@ class _HttpClientRequest implements HttpClientRequest {
   _HttpClientRequest(this._jsReq, this.done, this.uri, this.method, this.headers, [this.encoding = UTF8]);
 
   HttpConnectionInfo get connectionInfo {
-
+    return null;
   }
 
   void addError(error, [StackTrace stackTrace]) {
@@ -32,6 +32,7 @@ class _HttpClientRequest implements HttpClientRequest {
   }
 
   Future addStream(Stream<List<int>> stream) {
+    return null;
   }
 
   void write(Object obj) {
@@ -53,7 +54,7 @@ class _HttpClientRequest implements HttpClientRequest {
   }
 
   Future flush() {
-
+    return null;
   }
 
   void writeln([Object obj]) {
@@ -61,33 +62,28 @@ class _HttpClientRequest implements HttpClientRequest {
   }
 
   List<Cookie> get cookies {
-
+    return null;
   }
 
-  Encoding encoding() {
-
+  bool get bufferOutput {
+    return null;
   }
 
-  bool bufferOutput() {
-
+  bool get followRedirects {
+    return null;
   }
 
-  bool followRedirects() {
-
+  bool get persistentConnection {
+    return null;
   }
 
-  bool persistentConnection() {
-
+  int get contentLength {
+    return null;
   }
 
-  int contentLength() {
-
+  int get maxRedirects {
+    return null;
   }
-
-  int maxRedirects() {
-
-  }
-
 
 }
 
