@@ -9,7 +9,7 @@ class HttpServer implements Stream<List<int>> {
   final int port;
 
   bool autoCompress;
-  HttpHeaders get defaultResponseHeaders;
+  HttpHeaders get defaultResponseHeaders => null;
   Duration idleTimeout;
   String serverHeader;
   bool get isBroadcast { return true; }

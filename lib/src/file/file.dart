@@ -53,6 +53,7 @@ class File extends FileSystemEntity {
     return 0;
   }
 
+  /*
   Future<RandomAccessFile> open({FileMode mode: FileMode.READ}) {
     return null;
   }
@@ -61,6 +62,7 @@ class File extends FileSystemEntity {
   RandomAccessFile openSync({FileMode mode: FileMode.READ}) {
     return null;
   }
+  */
 
   Stream<List<int>> openRead([int start, int end]) {
     return null;

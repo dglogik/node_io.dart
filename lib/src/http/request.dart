@@ -10,7 +10,18 @@ class _HttpClientRequest implements HttpClientRequest {
 
   final String method;
 
-  final Encoding encoding;
+  Encoding encoding;
+
+  bool bufferOutput;
+  bool followRedirects;
+  bool persistentConnection;
+
+  int contentLength;
+  int maxRedirects;
+
+  List<Cookie> get cookies {
+    return null;
+  }
 
   _HttpClientRequest(this._jsReq, this.done, this.uri, this.method, this.headers, [this.encoding = UTF8]);
 
@@ -19,7 +30,7 @@ class _HttpClientRequest implements HttpClientRequest {
   }
 
   void addError(error, [StackTrace stackTrace]) {
-
+    // TODO
   }
 
   Future close() {
@@ -60,31 +71,6 @@ class _HttpClientRequest implements HttpClientRequest {
   void writeln([Object obj]) {
 
   }
-
-  List<Cookie> get cookies {
-    return null;
-  }
-
-  bool get bufferOutput {
-    return null;
-  }
-
-  bool get followRedirects {
-    return null;
-  }
-
-  bool get persistentConnection {
-    return null;
-  }
-
-  int get contentLength {
-    return null;
-  }
-
-  int get maxRedirects {
-    return null;
-  }
-
 }
 
 abstract class HttpClientRequest implements IOSink {

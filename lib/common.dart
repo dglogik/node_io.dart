@@ -67,9 +67,11 @@ abstract class InternetAddress {
   bool get isLoopback;
   bool get isMulticast;
 
+  /*
   factory InternetAddress(String address) {
     return new _InternetAddress(address);
   }
+  */
 
   static Future<List<InternetAddress>> lookup(String host, {InternetAddressType type: InternetAddressType.ANY}) {
     var completer = new Completer<List<InternetAddress>>();
@@ -79,7 +81,7 @@ abstract class InternetAddress {
     if(type == InternetAddressType.IP_V6)
       args.add(6);
     args.add((err, address, family) {
-      completer.complete(<InternetAddress>[]..add(new _InternetAddress(address)));
+      // completer.complete(<InternetAddress>[]..add(new _InternetAddress(address)));
     });
 
     _dns.callMethod("lookup", args);
@@ -89,6 +91,7 @@ abstract class InternetAddress {
   Future<InternetAddress> reverse();
 }
 
+/*
 class _InternetAddress implements InternetAddress {
 
   final String address;
@@ -122,6 +125,7 @@ class _InternetAddress implements InternetAddress {
 
   }
 }
+*/
 
 class InternetAddressType {
   static const InternetAddressType IP_V4 = const InternetAddressType._("IP_v4");

@@ -4,6 +4,22 @@
 
 part of node_io.http;
 
+class _CharCode {
+  static const int HT = 9;
+  static const int LF = 10;
+  static const int CR = 13;
+  static const int SP = 32;
+  static const int AMPERSAND = 38;
+  static const int COMMA = 44;
+  static const int DASH = 45;
+  static const int SLASH = 47;
+  static const int ZERO = 48;
+  static const int ONE = 49;
+  static const int COLON = 58;
+  static const int SEMI_COLON = 59;
+  static const int EQUAL = 61;
+}
+
 class _HttpHeaders implements HttpHeaders {
   final Map<String, List<String>> _headers;
   final String protocolVersion;
@@ -594,24 +610,29 @@ class _HttpHeaders implements HttpHeaders {
     return cookies;
   }
 
+
   static String _validateField(String field) {
+    /* TODO
     for (var i = 0; i < field.length; i++) {
       if (!_HttpParser._isTokenChar(field.codeUnitAt(i))) {
         throw new FormatException(
             "Invalid HTTP header field name: ${JSON.encode(field)}");
       }
     }
+    */
     return field.toLowerCase();
   }
 
   static _validateValue(value) {
     if (value is! String) return value;
+    /* TODO
     for (var i = 0; i < value.length; i++) {
-      if (!_HttpParser._isValueChar(value.codeUnitAt(i))) {
+      if (_HttpParser._isValueChar(value.codeUnitAt(i))) {
         throw new FormatException(
             "Invalid HTTP header field value: ${JSON.encode(value)}");
       }
     }
+    */
     return value;
   }
 }
