@@ -31,7 +31,7 @@ abstract class HttpClientResponse implements Stream<List<int>> {
   Future<Socket> detachSocket();
 }
 
-class _HttpClientResponse extends Stream implements HttpClientResponse {
+class _HttpClientResponse extends Stream<List<int>> implements HttpClientResponse {
 
   final StreamController<List> _controller = new StreamController<List>();
 
@@ -55,7 +55,7 @@ class _HttpClientResponse extends Stream implements HttpClientResponse {
       redirects = <RedirectInfo>[],
       headers = new _HttpHeaders(res["httpVersion"]) {
 
-    Map<String, dynamic> map = JSON.decode(context["JSON"].callMethod('stringify', _res["headers"]));
+    Map<String, dynamic> map = JSON.decode(context["global"]["JSON"].callMethod('stringify', _res["headers"]));
     map.forEach((key, value) {
       headers.add(key, value);
     });

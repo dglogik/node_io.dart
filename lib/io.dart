@@ -5,4 +5,6 @@ library node_io;
 
 export 'file.dart';
 export 'http.dart';
+export 'websocket.dart';
+
 export 'common.dart';

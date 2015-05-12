@@ -42,7 +42,7 @@ class _WebSocket extends Stream implements WebSocket {
   Future get done => _done.future;
 
   String get protocol => _socket["protocol"];
-  String get extensions => context["Object"].callMethod("keys", [_socket["extensions"]]).join("; ");
+  String get extensions => context["global"]["Object"].callMethod("keys", [_socket["extensions"]]).join("; ");
 
   String get closeReason => _closeReason;
   int get closeCode => _closeCode;
