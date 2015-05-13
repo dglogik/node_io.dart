@@ -117,23 +117,7 @@ class _HttpClient implements HttpClient {
   }
 
   Future<HttpClientRequest> postUrl(Uri url) {
-    if(url.scheme == "https") {
-      // https
-      // TODO
-      return null;
-    } else {
-      // http
-      var completer = new Completer<HttpClientResponse>();
-      var jsReq = _http.callMethod("request", [{
-        "hostname": url.host,
-        "port": url.port,
-          "path": url.path,
-          "method": "POST"
-      }, (jsRes) {
-        completer.complete(new _HttpClientResponse(jsRes, "POST"));
-      }]);
-      return new Future.value(new _HttpClientRequest(jsReq, completer.future, url, "POST", new _HttpHeaders("1.1")));
-    }
+    return new Future.value(new _HttpClientRequest(url, "POST", new _HttpHeaders("1.1")));
   }
 
   Future<HttpClientRequest> put(String host, int port, String path) {

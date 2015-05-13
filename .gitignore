@@ -7,8 +7,11 @@ build/
 packages
 
 # Or the files created by dart2js.
+./test.js
+
 *.dart.js
 *.js_
+*.js.info.json
 *.js.deps
 *.js.map
 
