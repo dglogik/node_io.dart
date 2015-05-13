@@ -1,7 +1,7 @@
 part of node_io.http;
 
 class _HttpClientRequest implements HttpClientRequest {
-  final Completer _done = new Completer<HttpClientResponse>();
+  final Completer _done = new Completer<HttpClientResponse>.sync();
 
   final HttpHeaders headers;
   final Uri uri;
@@ -40,7 +40,7 @@ class _HttpClientRequest implements HttpClientRequest {
 
     // TODO?
     var _headers = {};
-    headers.forEach((name, values) => _headers[name] = values[0]);
+    headers.forEach((name, values) => _headers[name] = headers.value(name));
 
     // http
     var req = _http.callMethod("request", [new JsObject.jsify({
@@ -48,7 +48,7 @@ class _HttpClientRequest implements HttpClientRequest {
       "port": uri.port,
       "path": uri.path,
       "method": "POST",
-      "headers": new JsObject.jsify(_headers)
+      "headers": _headers
     }), (res) {
       _done.complete(new _HttpClientResponse(res, "POST"));
     }]);
@@ -74,7 +74,7 @@ class _HttpClientRequest implements HttpClientRequest {
     add(this.encoding.encode(obj.toString()));
   }
 
-  void writeAll(Iterable objects, [String separator]) {
+  void writeAll(Iterable objects, [String separator = ""]) {
     var index = 0;
     for(var obj in objects) {
       write(obj);
@@ -92,8 +92,7 @@ class _HttpClientRequest implements HttpClientRequest {
     return null;
   }
 
-  void writeln([Object obj]) {
-
+  void writeln([Object obj = ""]) {
   }
 }
 
