@@ -47,13 +47,13 @@ class _HttpClientRequest implements HttpClientRequest {
       "hostname": uri.host,
       "port": uri.port,
       "path": uri.path,
-      "method": "POST",
+      "method": method,
       "headers": _headers
     }), (res) {
-      _done.complete(new _HttpClientResponse(res, "POST"));
+      _done.complete(new _HttpClientResponse(res, method));
     }]);
 
-    for(var data in _buffer) {
+    for (var data in _buffer) {
       req.callMethod("write", [data]);
     }
 
@@ -71,7 +71,7 @@ class _HttpClientRequest implements HttpClientRequest {
   }
 
   void write(Object obj) {
-    add(this.encoding.encode(obj.toString()));
+    add(encoding.encode(obj.toString()));
   }
 
   void writeAll(Iterable objects, [String separator = ""]) {

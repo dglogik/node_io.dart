@@ -7,7 +7,6 @@ abstract class RedirectInfo {
 }
 
 abstract class HttpClientResponse implements Stream<List<int>> {
-
   int get statusCode;
   int get contentLength;
 
@@ -32,7 +31,6 @@ abstract class HttpClientResponse implements Stream<List<int>> {
 }
 
 class _HttpClientResponse extends Stream<List<int>> implements HttpClientResponse {
-
   final StreamController<List> _controller = new StreamController<List>();
 
   final JsObject _res;
@@ -99,7 +97,7 @@ class _HttpClientResponse extends Stream<List<int>> implements HttpClientRespons
     return null;
   }
 
-  X509Certificate get certificate { 
+  X509Certificate get certificate {
     return null;
   }
 
@@ -114,5 +112,4 @@ class _HttpClientResponse extends Stream<List<int>> implements HttpClientRespons
   Future<Socket> detachSocket() {
     return null;
   }
-
 }

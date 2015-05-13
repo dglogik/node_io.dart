@@ -1,13 +1,17 @@
-import 'package:node_io/io.dart';
-
-import 'dart:convert';
+import "package:node_io/io.dart";
 
 main() async {
-  print("#1");
-  HttpClientRequest req = await (new HttpClient()).postUrl(Uri.parse("http://www.httpbin.org/post"));
-  print("#2");
-  req.add(UTF8.encode("Hello world"));
-  print("#3");
-  var res = await req.close();
-  print("#4");
+  await testHttp();
+}
+
+testHttp() async {
+  print("== HTTP Client ==");
+  var client = new HttpClient();
+  print("Making POST Request");
+  HttpClientRequest req = await client.postUrl(Uri.parse("http://www.httpbin.org/post"));
+  print("Writing Data to Request");
+  req.write("Hello World");
+  print("Closing Request");
+  HttpClientResponse res = await req.close();
+  print("Got Response");
 }

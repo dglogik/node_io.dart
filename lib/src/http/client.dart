@@ -48,20 +48,15 @@ abstract class HttpClient {
 }
 
 class _HttpClient implements HttpClient {
-
   _HttpClient();
 
   void addCredentials(Uri url, String realm, HttpClientCredentials credentials) {
-
   }
 
   void addProxyCredentials(String host, int port, String realm, HttpClientCredentials credentials) {
-
   }
 
-  void close({bool force: false}) {
-
-  }
+  void close({bool force: false}) {}
 
   Future<HttpClientRequest> delete(String host, int port, String path) {
     return null;
@@ -69,60 +64,51 @@ class _HttpClient implements HttpClient {
 
   Future<HttpClientRequest> deleteUrl(Uri url) {
     return null;
-
   }
 
   Future<HttpClientRequest> get(String host, int port, String path) {
-    return null;
-
+    return getUrl(new Uri(host: host, port: port, path: path));
   }
 
-  Future<HttpClientRequest> getUrl(Uri url) {
-    return null;
+  Future<HttpClientRequest> getUrl(Uri url) async {
+    return openUrl("GET", url);
 
   }
 
   Future<HttpClientRequest> head(String host, int port, String path) {
     return null;
-
   }
 
   Future<HttpClientRequest> headUrl(Uri url) {
     return null;
-
   }
 
-  Future<HttpClientRequest> open(String method, String host, int port, String path) {
-    return null;
-
+  Future<HttpClientRequest> open(String method, String host, int port, String path) async {
+    return new _HttpClientRequest(new Uri(host: host, port: port, path: path), method, new _HttpHeaders("1.1"));
   }
 
-  Future<HttpClientRequest> openUrl(String method, Uri url) {
-    return null;
-
+  Future<HttpClientRequest> openUrl(String method, Uri url) async {
+    return new _HttpClientRequest(url, method, new _HttpHeaders("1.1"));
   }
 
   Future<HttpClientRequest> patch(String host, int port, String path) {
     return null;
-
   }
 
   Future<HttpClientRequest> patchUrl(Uri url) {
     return null;
-
   }
 
   Future<HttpClientRequest> post(String host, int port, String path) {
-    return null;
+    return postUrl(new Uri(host: host, port: port, path: path));
   }
 
-  Future<HttpClientRequest> postUrl(Uri url) {
-    return new Future.value(new _HttpClientRequest(url, "POST", new _HttpHeaders("1.1")));
+  Future<HttpClientRequest> postUrl(Uri url) async {
+    return openUrl("POST", url);
   }
 
   Future<HttpClientRequest> put(String host, int port, String path) {
     return null;
-
   }
 
   Future<HttpClientRequest> putUrl(Uri url) {
