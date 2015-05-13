@@ -19,7 +19,7 @@ part 'src/http/request.dart';
 part 'src/http/client.dart';
 part 'src/http/server.dart';
 
-JsObject _http = require('http');
+JsObject _http = require("http");
 JsObject _https = require('https');
 
 abstract class HeaderValue {

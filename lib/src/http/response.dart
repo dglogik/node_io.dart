@@ -55,10 +55,12 @@ class _HttpClientResponse extends Stream<List<int>> implements HttpClientRespons
       redirects = <RedirectInfo>[],
       headers = new _HttpHeaders(res["httpVersion"]) {
 
-    Map<String, dynamic> map = JSON.decode(context["global"]["JSON"].callMethod('stringify', _res["headers"]));
-    map.forEach((key, value) {
-      headers.add(key, value);
-    });
+    JsObject obj = _res["headers"];
+
+    List<String> keys = context["global"]["Object"].callMethod("keys", [obj]);
+    for (var key in keys) {
+      headers.add(key, obj[key]);
+    }
 
     onData(buf) {
       _controller.add(bufToList(buf));

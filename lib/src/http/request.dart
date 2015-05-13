@@ -1,13 +1,13 @@
 part of node_io.http;
 
 class _HttpClientRequest implements HttpClientRequest {
+  final Completer _done = new Completer<HttpClientResponse>();
 
   final HttpHeaders headers;
   final Uri uri;
 
   final String method;
 
-  Completer _done = new Completer();
   List<dynamic> _buffer = <dynamic>[];
 
   Encoding encoding;
@@ -19,7 +19,7 @@ class _HttpClientRequest implements HttpClientRequest {
   int contentLength = -1;
   int maxRedirects;
 
-  Future<HttpClientResponse> get done => _done.future;
+  Future get done => _done.future;
 
   List<Cookie> get cookies {
     return null;
@@ -39,7 +39,7 @@ class _HttpClientRequest implements HttpClientRequest {
     headers.add(HttpHeaders.CONTENT_LENGTH, contentLength);
 
     // TODO?
-    Map _headers = new Map();
+    var _headers = {};
     headers.forEach((name, values) => _headers[name] = values[0]);
 
     // http
@@ -47,8 +47,8 @@ class _HttpClientRequest implements HttpClientRequest {
       "hostname": uri.host,
       "port": uri.port,
       "path": uri.path,
-      "method": "POST"
-      // "headers": _headers
+      "method": "POST",
+      "headers": new JsObject.jsify(_headers)
     }), (res) {
       _done.complete(new _HttpClientResponse(res, "POST"));
     }]);
@@ -56,6 +56,7 @@ class _HttpClientRequest implements HttpClientRequest {
     for(var data in _buffer) {
       req.callMethod("write", [data]);
     }
+
     req.callMethod("end");
     return done;
   }

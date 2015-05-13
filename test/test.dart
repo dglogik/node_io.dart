@@ -8,8 +8,6 @@ main() async {
   print("#2");
   req.add(UTF8.encode("Hello world"));
   print("#3");
-  HttpClientResponse res = await req.close();
+  var res = await req.close();
   print("#4");
-  res.listen((list) {});
-  print("#5");
 }
