@@ -7,7 +7,7 @@ build/
 packages
 
 # Or the files created by dart2js.
-./test.js
+test.js
 
 *.dart.js
 *.js_
