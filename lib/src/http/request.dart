@@ -43,7 +43,7 @@ class _HttpClientRequest implements HttpClientRequest {
     headers.forEach((name, values) => _headers[name] = headers.value(name));
 
     // http
-    var req = _http.callMethod("request", [new JsObject.jsify({
+    var req = (uri.scheme == "https" ? _https : _http).callMethod("request", [new JsObject.jsify({
       "hostname": uri.host,
       "port": uri.port,
       "path": uri.path,
@@ -63,6 +63,8 @@ class _HttpClientRequest implements HttpClientRequest {
 
   void add(List<int> data) {
     _buffer.add(listToBuf(data));
+    if(contentLength < 0)
+      contentLength = 0;
     contentLength += data.length;
   }
 

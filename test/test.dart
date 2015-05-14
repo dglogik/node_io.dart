@@ -1,5 +1,7 @@
 import "package:node_io/io.dart";
 
+import "dart:convert";
+
 main() async {
   await testHttp();
 }
@@ -14,4 +16,6 @@ testHttp() async {
   print("Closing Request");
   HttpClientResponse res = await req.close();
   print("Got Response");
+  print("Listening to Response");
+  res.listen((list) => print(UTF8.decode(list)));
 }

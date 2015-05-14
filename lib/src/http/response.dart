@@ -31,7 +31,7 @@ abstract class HttpClientResponse implements Stream<List<int>> {
 }
 
 class _HttpClientResponse extends Stream<List<int>> implements HttpClientResponse {
-  final StreamController<List> _controller = new StreamController<List>();
+  final StreamController<List> _controller = new StreamController<List>(sync: true);
 
   final JsObject _res;
 

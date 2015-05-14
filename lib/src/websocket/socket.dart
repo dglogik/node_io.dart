@@ -28,7 +28,7 @@ abstract class WebSocket implements StreamSink, Stream {
 }
 
 class _WebSocket extends Stream implements WebSocket {
-  final StreamController<List> _controller = new StreamController<List>();
+  final StreamController<List> _controller = new StreamController<List>(sync: true);
 
   final JsObject _socket;
 
