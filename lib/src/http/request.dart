@@ -42,11 +42,16 @@ class _HttpClientRequest implements HttpClientRequest {
     var _headers = {};
     headers.forEach((name, values) => _headers[name] = headers.value(name));
 
+    var path = uri.path;
+    if(uri.query.length > 0) {
+      path += "?${uri.query}";
+    }
+
     // http
     var req = (uri.scheme == "https" ? _https : _http).callMethod("request", [new JsObject.jsify({
       "hostname": uri.host,
       "port": uri.port,
-      "path": uri.path,
+      "path": path,
       "method": method,
       "headers": _headers
     }), (res) {

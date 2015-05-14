@@ -17,5 +17,6 @@ testHttp() async {
   HttpClientResponse res = await req.close();
   print("Got Response");
   print("Listening to Response");
-  res.listen((list) => print(UTF8.decode(list)));
+  var text = await res.fold("", (String a, List b) => a += UTF8.decode(b));
+  print(text);
 }
