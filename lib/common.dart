@@ -6,10 +6,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
 
+part 'src/platform.dart';
+
 JsObject _dns = require('dns');
 
 abstract class IOSink implements StringSink, StreamSink<List<int>> {
-
   Encoding encoding;
   Future get done;
 
@@ -27,11 +28,11 @@ abstract class IOSink implements StringSink, StreamSink<List<int>> {
 
   void write(Object obj);
 
-  void writeAll(Iterable objects, [String separator=""]);
+  void writeAll(Iterable objects, [String separator = ""]);
 
   void writeCharCode(int charCode);
 
-  void writeln([Object obj=""]);
+  void writeln([Object obj = ""]);
 }
 
 abstract class SocketOption {
@@ -56,7 +57,6 @@ abstract class Socket implements IOSink, Stream<List<int>> {
 }
 
 abstract class InternetAddress {
-
   List<int> get rawAddress;
   InternetAddressType type;
 
@@ -73,13 +73,12 @@ abstract class InternetAddress {
   }
   */
 
-  static Future<List<InternetAddress>> lookup(String host, {InternetAddressType type: InternetAddressType.ANY}) {
+  static Future<List<InternetAddress>> lookup(String host,
+      {InternetAddressType type: InternetAddressType.ANY}) {
     var completer = new Completer<List<InternetAddress>>();
     var args = [host];
-    if(type == InternetAddressType.IP_V4)
-      args.add(4);
-    if(type == InternetAddressType.IP_V6)
-      args.add(6);
+    if (type == InternetAddressType.IP_V4) args.add(4);
+    if (type == InternetAddressType.IP_V6) args.add(6);
     args.add((err, address, family) {
       // completer.complete(<InternetAddress>[]..add(new _InternetAddress(address)));
     });
@@ -146,5 +145,6 @@ class X509Certificate {
   final DateTime startValidity;
   final DateTime endValidity;
 
-  X509Certificate(this.subject, this.issuer, this.startValidity, this.endValidity);
+  X509Certificate(
+      this.subject, this.issuer, this.startValidity, this.endValidity);
 }

@@ -17,3 +17,6 @@ test.js
 
 # Include when developing application packages.
 pubspec.lock
+
+# node.js
+node_modules/
