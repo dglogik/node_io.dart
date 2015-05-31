@@ -1,9 +1,7 @@
 part of node_io.common;
 
-JsObject _process = require("process");
-
 class Platform {
-  static Map<String, String> get environment => () {
+  static Map<String, String> get environment {
     var obj = _process["env"];
     var map = {};
     List<String> keys = context["global"]["Object"].callMethod("keys", [obj]);
@@ -16,19 +14,19 @@ class Platform {
 
   static List<String> get executableArguments => null;
 
-  static Uri get script;
+  // static Uri get script;
 
   static String get operatingSystem => _process["platform"];
-  static String get localHostname;
-  static String get pathSeparator;
-  static String get packageRoot;
-  static String get executable;
+  // static String get localHostname;
+  // static String get pathSeparator;
+  // static String get packageRoot;
+  // static String get executable;
   static String get version => "${_process['version']} node.js";
 
-  static int get numberOfProcessors;
+  // static int get numberOfProcessors;
 
-  static get bool isAndroid => false;
-  static get bool isLinux => _process["platform"] == "linux";
-  static get bool isMacOS = _process["platform"] == "darwin";
-  static get bool isWindows = _process["platform"] == "win32";
+  static bool get isAndroid => false;
+  static bool get isLinux => _process["platform"] == "linux";
+  static bool get isMacOS => _process["platform"] == "darwin";
+  static bool get isWindows => _process["platform"] == "win32";
 }

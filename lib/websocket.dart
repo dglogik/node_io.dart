@@ -7,7 +7,7 @@ import 'dart:js';
 
 part 'src/websocket/socket.dart';
 
-JsObject _ws = require(Uri.base.toFilePath() + "/node_modules/ws");
+JsObject _ws = require("ws");
 
 class WebSocketException implements Exception {
   final String message;

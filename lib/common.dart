@@ -7,8 +7,16 @@ import 'dart:convert';
 import 'dart:js';
 
 part 'src/platform.dart';
+part 'src/process.dart';
 
+const Encoding SYSTEM_ENCODING = UTF8;
+
+JsObject _process = context["process"];
 JsObject _dns = require('dns');
+
+exit([int exitCode = 0]) {
+  _process.callMethod("exit", [exitCode]);
+}
 
 abstract class IOSink implements StringSink, StreamSink<List<int>> {
   Encoding encoding;
