@@ -55,14 +55,14 @@ class _WebSocket extends Stream implements WebSocket {
   _WebSocket(this._socket) {
     _done.future.then((_) => _controller.close());
 
-    onData(data) {
+    onData(data, flags) {
       if (!(data is String)) {
         data = bufToList(data);
       }
       _controller.add(data);
     }
 
-    _socket.callMethod("on", ["data", onData]);
+    _socket.callMethod("on", ["message", onData]);
 
     onError(error) {
       _controller.addError(error);
@@ -71,7 +71,7 @@ class _WebSocket extends Stream implements WebSocket {
     _socket.callMethod("on", ["error", onError]);
 
     _done.future.then((_) {
-      _socket.callMethod("removeListener", ["data", onData]);
+      // _socket.callMethod("removeListener", ["data", onData]);
       _socket.callMethod("removeListener", ["error", onError]);
     });
   }
@@ -122,7 +122,7 @@ class _WebSocket extends Stream implements WebSocket {
     return completer.future;
   }
 
-  Future close([int code, String reason]) {
+  Future close([int code = 1000, String reason]) {
     _socket.callMethod("close", [code, reason]);
     _closeReason = reason;
     _closeCode = code;
