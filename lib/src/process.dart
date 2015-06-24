@@ -1,6 +1,7 @@
 part of node_io.common;
 
 JsObject _child = require("child_process");
+JsFunction _spawnSync;
 
 enum ProcessStartMode {
   /// Normal child process.
@@ -38,27 +39,37 @@ abstract class Process {
       bool runInShell: false,
       Encoding stdoutEncoding: SYSTEM_ENCODING,
       Encoding stderrEncoding: SYSTEM_ENCODING}) {
+    if(_spawnSync == null && int.parse(Platform.version.split(" ")[0].split(".")[1]) < 12)
+      _spawnSync = require("spawn-sync");
+
     var env = {};
     if(includeParentEnvironment)
       env.addAll(Platform.environment);
     if(environment != null)
       env.addAll(environment);
 
-    JsObject obj;
+    List spawnArgs;
+
     if(runInShell) {
       arguments.insert(0, executable);
-      obj = _child.callMethod("spawnSync", ["/bin/sh", arguments, new JsObject.jsify({
+      spawnArgs = ["/bin/sh", new JsObject.jsify({
         "cwd": workingDirectory,
         "env": env,
         "input": arguments.join(" ")
-      })]);
+      })];
     } else {
-      obj = _child.callMethod("spawnSync", [executable, arguments, new JsObject.jsify({
+      spawnArgs = [executable, arguments, new JsObject.jsify({
         "cwd": workingDirectory,
         "env": env
-      })]);
+      })];
     }
-    
+
+    var obj;
+    if(_spawnSync == null)
+      obj = _child.callMethod("spawnSync", spawnArgs);
+    else
+      obj = _spawnSync.apply(spawnArgs);
+
     var stdout = stdoutEncoding.decode(bufToList(obj["stdout"]));
     var stderr = stderrEncoding.decode(bufToList(obj["stderr"]));
 
