@@ -4,8 +4,6 @@ abstract class HttpClient {
   static const int DEFAULT_HTTP_PORT = 80;
   static const int DEFAULT_HTTPS_PORT = 443;
 
-  Function set badCertificateCallback(val) {}
-
   factory HttpClient() {
     return new _HttpClient();
   }
@@ -51,6 +49,8 @@ abstract class HttpClient {
 
 class _HttpClient implements HttpClient {
   _HttpClient();
+  
+  Function set badCertificateCallback(val) {}
 
   void addCredentials(Uri url, String realm, HttpClientCredentials credentials) {
   }
