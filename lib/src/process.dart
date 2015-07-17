@@ -64,7 +64,7 @@ abstract class Process {
       })];
     }
 
-    var obj;
+    JsObject obj;
     if(_spawnSync == null)
       obj = _child.callMethod("spawnSync", spawnArgs);
     else

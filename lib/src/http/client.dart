@@ -4,6 +4,8 @@ abstract class HttpClient {
   static const int DEFAULT_HTTP_PORT = 80;
   static const int DEFAULT_HTTPS_PORT = 443;
 
+  Function badCertificateCallback;
+
   factory HttpClient() {
     return new _HttpClient();
   }
