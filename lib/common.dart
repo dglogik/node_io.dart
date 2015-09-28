@@ -12,7 +12,7 @@ part 'src/process.dart';
 const Encoding SYSTEM_ENCODING = UTF8;
 
 JsObject _process = context["process"];
-JsObject _dns = require('dns');
+JsObject _dns = require("dns");
 
 exit([int exitCode = 0]) {
   _process.callMethod("exit", [exitCode]);

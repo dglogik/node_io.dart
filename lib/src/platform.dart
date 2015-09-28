@@ -12,13 +12,20 @@ class Platform {
     return map;
   }
 
-  static List<String> get executableArguments => null;
+  static List<String> get executableArguments => [];
 
   // static Uri get script;
 
   static String get operatingSystem => _process["platform"];
   // static String get localHostname;
-  // static String get pathSeparator;
+  static String get pathSeparator {
+    if (_sep == null) {
+      _sep = require("path")["sep"];
+    }
+    return _sep;
+  }
+
+  static String _sep;
   // static String get packageRoot;
   // static String get executable;
   static String get version => "${_process['version']} node.js";
