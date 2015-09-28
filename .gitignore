@@ -5,6 +5,7 @@
 pubspec.lock
 build/
 packages
+.packages
 
 # Or the files created by dart2js.
 test.js

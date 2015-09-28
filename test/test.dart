@@ -1,9 +1,17 @@
 import "package:node_io/io.dart";
+import "package:node_io/common.dart";
 
 import "dart:convert";
 
 main() async {
+  await testPlatform();
   await testHttp();
+}
+
+testPlatform() async {
+  print("== Platform ==");
+  print("Operating System: ${Platform.operatingSystem}");
+  print("Path Separator: ${Platform.pathSeparator}");
 }
 
 testHttp() async {
