@@ -1,5 +1,30 @@
 part of node_io.file;
 
 class Directory extends FileSystemEntity {
-  // TODO
+  final String path;
+
+  factory Directory(String path) {
+    return new Directory._(pathlib.normalize(path));
+  }
+
+  Directory._(this.path);
+
+  void createSync({bool recursive: false}) {
+    _fs.callMethod("mkdirSync", [path]);
+  }
+
+  List<FileSystemEntity> listSync({bool recursive: false}) {
+    var names = _fs.callMethod("readdirSync", [path]);
+    var out = [];
+    for (var name in names) {
+      var p = "${path}${Platform.pathSeparator}${name}";
+      JsObject stat = _fs.callMethod("statSync", [p]);
+      if (stat.callMethod("isDirectory")) {
+        out.add(new Directory(p));
+      } else if (stat.callMethod("isFile")) {
+        out.add(new File(p));
+      }
+    }
+    return out;
+  }
 }

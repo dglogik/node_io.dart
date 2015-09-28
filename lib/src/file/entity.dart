@@ -83,7 +83,7 @@ abstract class FileSystemEntity {
   }
 
   bool existsSync() {
-    return true;
+    return _fs.callMethod("existsSync", [path]);
   }
 
   Future<FileSystemEntity> rename(String newPath) {
@@ -114,4 +114,6 @@ abstract class FileSystemEntity {
     return null;
   }
 
+  @override
+  String toString() => "${runtimeType}(${path})";
 }

@@ -1,11 +1,20 @@
 import "package:node_io/io.dart";
-import "package:node_io/common.dart";
 
 import "dart:convert";
 
 main() async {
   await testPlatform();
+  await testFileSystem();
   await testHttp();
+}
+
+testFileSystem() async {
+  print("== FileSystem ==");
+  print("=== Listing Directories ===");
+  var dir = new Directory("/");
+  for (var entity in dir.listSync()) {
+    print(entity);
+  }
 }
 
 testPlatform() async {

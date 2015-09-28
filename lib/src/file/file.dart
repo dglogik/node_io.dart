@@ -16,10 +16,17 @@ class FileMode {
 
 
 class File extends FileSystemEntity {
-  final String _path;
+  final String path;
 
-  File(this._path);
-  File.fromUri(Uri uri) : _path = uri.toFilePath();
+  factory File(String path) {
+    return new File._(pathlib.normalize(path));
+  }
+
+  File._(this.path);
+
+  factory File.fromUri(Uri uri) {
+    return new File(uri.toFilePath(windows: Platform.isWindows));
+  }
 
   Future<File> copy(String newPath) {
     return null;
@@ -75,7 +82,7 @@ class File extends FileSystemEntity {
   Future<List<int>> readAsBytes() {
     var completer = new Completer<FileStat>();
 
-    _fs.callMethod("readFile", [_path, (error, JsObject buf) {
+    _fs.callMethod("readFile", [path, (error, JsObject buf) {
       completer.complete(bufToList(buf));
     }]);
 
@@ -83,16 +90,16 @@ class File extends FileSystemEntity {
   }
 
   List<int> readAsBytesSync() {
-    var buf = _fs.callMethod("readFileSync", [_path]);
+    var buf = _fs.callMethod("readFileSync", [path]);
     return bufToList(buf);
   }
 
-  Future<List<String>> readAsLines({Encoding encoding: UTF8}) {
-    return null;
+  Future<List<String>> readAsLines({Encoding encoding: UTF8}) async {
+    return (await readAsString(encoding: encoding)).split("\n");
   }
 
   List<String> readAsLinesSync({Encoding encoding: UTF8}) {
-    return null;
+    return readAsStringSync(encoding: encoding).split("\n");
   }
 
   Future<String> readAsString({Encoding encoding: UTF8}) {
@@ -119,7 +126,7 @@ class File extends FileSystemEntity {
 
     var completer = new Completer<FileStat>();
 
-    _fs.callMethod("writeFile", [_path, listToBuf(bytes), (error) {
+    _fs.callMethod("writeFile", [path, listToBuf(bytes), (error) {
       completer.complete(this);
     }]);
 
@@ -130,7 +137,7 @@ class File extends FileSystemEntity {
     // TODO: FileMode.APPEND
     // TODO: flush
 
-    _fs.callMethod("writeFileSync", [_path, listToBuf(bytes)]);
+    _fs.callMethod("writeFileSync", [path, listToBuf(bytes)]);
   }
 
   Future<File> writeAsString(String contents, {FileMode mode: FileMode.WRITE, Encoding encoding: UTF8, bool flush: false}) {
