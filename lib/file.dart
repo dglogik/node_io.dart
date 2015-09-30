@@ -3,8 +3,6 @@ library node_io.file;
 import 'package:node_io/util.dart';
 import 'package:node_io/common.dart';
 
-import 'package:path/path.dart' as pathlib;
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:js';

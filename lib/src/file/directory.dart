@@ -4,7 +4,7 @@ class Directory extends FileSystemEntity {
   final String path;
 
   factory Directory(String path) {
-    return new Directory._(pathlib.normalize(path));
+    return new Directory._(normalizePath(path));
   }
 
   Directory._(this.path);

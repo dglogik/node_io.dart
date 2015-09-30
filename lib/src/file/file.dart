@@ -19,7 +19,7 @@ class File extends FileSystemEntity {
   final String path;
 
   factory File(String path) {
-    return new File._(pathlib.normalize(path));
+    return new File._(normalizePath(path));
   }
 
   File._(this.path);
