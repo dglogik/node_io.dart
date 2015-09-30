@@ -43,7 +43,7 @@ class RandomAccessFile {
       end = buffer.length;
     }
     _fs.callMethod(
-        "writeFileSync", [fd, listToBuf(buffer), start, end - start]);
+        "writeSync", [fd, listToBuf(buffer), start, end - start]);
   }
 
   Future<RandomAccessFile> writeString(String string,
