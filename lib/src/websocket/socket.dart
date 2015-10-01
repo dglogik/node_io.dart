@@ -65,16 +65,16 @@ class _WebSocket extends Stream implements WebSocket {
     _socket.callMethod("on", ["message", onData]);
 
     onError(error) {
-      _controller.addError(error);
+      _controller.addError(new WebSocketException(error.callMethod("toString")));
     }
 
     _socket.callMethod("on", ["error", onError]);
-    
-    onDone() {
+
+    onDone(_, _a) {
       if(!_done.isCompleted)
         _done.complete();
     }
-    
+
     _socket.callMethod("on", ["close", onDone]);
 
     _done.future.then((_) {
@@ -90,10 +90,22 @@ class _WebSocket extends Stream implements WebSocket {
     var socket =
         new JsObject(_ws, [url, new JsObject.jsify({"headers": headers})]);
 
+    bool hasOpened = false;
+
     socket.callMethod("on", [
       "open",
       () {
+        hasOpened = true;
         completer.complete(new _WebSocket(socket));
+      }
+    ]);
+
+    socket.callMethod("on", [
+      "error",
+      (err) {
+        if(hasOpened)
+          return;
+        completer.completeError(new WebSocketException(err.callMethod("toString")));
       }
     ]);
 

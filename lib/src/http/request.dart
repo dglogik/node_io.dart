@@ -58,6 +58,10 @@ class _HttpClientRequest implements HttpClientRequest {
       _done.complete(new _HttpClientResponse(res, method));
     }]);
 
+    req.callMethod("on", ["error", (error) {
+      _done.completeError(error);
+    }]);
+
     for (var data in _buffer) {
       req.callMethod("write", [data]);
     }
