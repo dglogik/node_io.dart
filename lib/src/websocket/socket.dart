@@ -75,7 +75,7 @@ class _WebSocket extends Stream implements WebSocket {
         _done.complete();
     }
     
-    _socket.callMethod("on", ["done", onDone]);
+    _socket.callMethod("on", ["close", onDone]);
 
     _done.future.then((_) {
       // _socket.callMethod("removeListener", ["data", onData]);
