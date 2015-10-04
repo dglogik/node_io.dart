@@ -25,6 +25,8 @@ abstract class FileSystemEntity {
   Directory get parent => null;
 
   String get path => null;
+  
+  Uri get uri => new Uri.file(path);
 
   static Future<bool> identical(String path1, String path2) {
     return null;
