@@ -2,6 +2,7 @@ part of node_io.http;
 
 class _HttpClientRequest implements HttpClientRequest {
   final Completer _done = new Completer<HttpClientResponse>.sync();
+  final Completer _written = new Completer.sync();
 
   final HttpHeaders headers;
   final Uri uri;
@@ -62,8 +63,11 @@ class _HttpClientRequest implements HttpClientRequest {
       _done.completeError(error);
     }]);
 
+
     for (var data in _buffer) {
-      req.callMethod("write", [data]);
+      req.callMethod("write", [data, "utf8", (_) {
+        _written.complete(this);
+      }]);
     }
 
     req.callMethod("end");
@@ -78,7 +82,7 @@ class _HttpClientRequest implements HttpClientRequest {
   }
 
   Future addStream(Stream<List<int>> stream) {
-    return null;
+    stream.listen((data) => add(data));
   }
 
   void write(Object obj) {
@@ -99,11 +103,10 @@ class _HttpClientRequest implements HttpClientRequest {
     write(new String.fromCharCode(charCode));
   }
 
-  Future flush() {
-    return null;
-  }
+  Future flush() => _written.future;
 
   void writeln([Object obj = ""]) {
+    write("$obj\n");
   }
 }
 

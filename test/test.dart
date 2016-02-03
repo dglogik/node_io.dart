@@ -11,7 +11,7 @@ main() async {
 testFileSystem() async {
   print("== FileSystem ==");
   print("=== Listing Directories ===");
-  var dir = new Directory("/");
+  var dir = new Directory("./");
   for (var entity in dir.listSync()) {
     print(entity);
   }

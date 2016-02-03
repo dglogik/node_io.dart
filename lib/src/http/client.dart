@@ -48,8 +48,10 @@ abstract class HttpClient {
 }
 
 class _HttpClient implements HttpClient {
+  bool _closed = false;
+
   _HttpClient();
-  
+
   Function set badCertificateCallback(val) {}
 
   void addCredentials(Uri url, String realm, HttpClientCredentials credentials) {
@@ -58,14 +60,16 @@ class _HttpClient implements HttpClient {
   void addProxyCredentials(String host, int port, String realm, HttpClientCredentials credentials) {
   }
 
-  void close({bool force: false}) {}
+  void close({bool force: false}) {
+    _closed = true;
+  }
 
   Future<HttpClientRequest> delete(String host, int port, String path) {
-    return null;
+    return deleteUrl(new Uri(host: host, port: port, path: path));
   }
 
   Future<HttpClientRequest> deleteUrl(Uri url) {
-    return null;
+    return openUrl("DELETE", url);
   }
 
   Future<HttpClientRequest> get(String host, int port, String path) {
@@ -74,31 +78,22 @@ class _HttpClient implements HttpClient {
 
   Future<HttpClientRequest> getUrl(Uri url) async {
     return openUrl("GET", url);
-
   }
 
   Future<HttpClientRequest> head(String host, int port, String path) {
-    return null;
+    return headUrl(new Uri(host: host, port: port, path: path));
   }
 
   Future<HttpClientRequest> headUrl(Uri url) {
-    return null;
-  }
-
-  Future<HttpClientRequest> open(String method, String host, int port, String path) async {
-    return new _HttpClientRequest(new Uri(host: host, port: port, path: path), method, new _HttpHeaders("1.1"));
-  }
-
-  Future<HttpClientRequest> openUrl(String method, Uri url) async {
-    return new _HttpClientRequest(url, method, new _HttpHeaders("1.1"));
+    return openUrl("HEAD", url);
   }
 
   Future<HttpClientRequest> patch(String host, int port, String path) {
-    return null;
+    return patchUrl(new Uri(host: host, port: port, path: path));
   }
 
   Future<HttpClientRequest> patchUrl(Uri url) {
-    return null;
+    return openUrl("PATCH", url);
   }
 
   Future<HttpClientRequest> post(String host, int port, String path) {
@@ -110,10 +105,20 @@ class _HttpClient implements HttpClient {
   }
 
   Future<HttpClientRequest> put(String host, int port, String path) {
-    return null;
+    return putUrl(new Uri(host: host, port: port, path: path));
   }
 
   Future<HttpClientRequest> putUrl(Uri url) {
-    return null;
+    return openUrl("PUT", url);
+  }
+
+  Future<HttpClientRequest> open(String method, String host, int port, String path) async {
+    return openUrl(method, new Uri(host: host, port: port, path: path));
+  }
+
+  Future<HttpClientRequest> openUrl(String method, Uri url) async {
+    if(_closed)
+      throw new StateError("client closed");
+    return new _HttpClientRequest(url, method, new _HttpHeaders("1.1"));
   }
 }

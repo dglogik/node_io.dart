@@ -146,7 +146,7 @@ class _WebSocket extends Stream implements WebSocket {
     _closeReason = reason;
     _closeCode = code;
     _done.complete();
-    return null;
+    return _done.future;
   }
 
   void addError(error, [StackTrace stackTrace]) {

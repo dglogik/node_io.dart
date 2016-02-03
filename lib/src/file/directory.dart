@@ -16,8 +16,9 @@ class Directory extends FileSystemEntity {
   List<FileSystemEntity> listSync({bool recursive: false}) {
     var names = _fs.callMethod("readdirSync", [path]);
     var out = [];
+    print(names);
     for (var name in names) {
-      var p = "${path}${Platform.pathSeparator}${name}";
+      var p = "${path}${name}";
       JsObject stat = _fs.callMethod("statSync", [p]);
       if (stat.callMethod("isDirectory")) {
         out.add(new Directory(p));

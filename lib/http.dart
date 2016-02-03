@@ -84,6 +84,32 @@ abstract class Cookie {
 
 abstract class HttpClientCredentials {}
 
+abstract class HttpClientBasicCredentials extends HttpClientCredentials {
+  factory HttpClientBasicCredentials(String username, String password)
+      => new _HttpClientBasicCredentials(username, password);
+}
+
+abstract class HttpClientDigestCredentials extends HttpClientCredentials {
+  factory HttpClientDigestCredentials(String username, String password)
+      => new _HttpClientDigestCredentials(username, password);
+}
+
+class _HttpClientBasicCredentials implements HttpClientBasicCredentials {
+  final String username;
+  final String password;
+  final String type;
+
+  _HttpClientBasicCredentials(this.username, this.password): this.type = "basic";
+}
+
+class _HttpClientDigestCredentials implements HttpClientDigestCredentials {
+  final String username;
+  final String password;
+  final String type;
+
+  _HttpClientDigestCredentials(this.username, this.password): this.type = "digest";
+}
+
 abstract class HttpConnectionInfo {
   InternetAddress get remoteAddress;
 
