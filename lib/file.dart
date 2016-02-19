@@ -14,4 +14,5 @@ part 'src/file/entity.dart';
 part 'src/file/file.dart';
 part 'src/file/directory.dart';
 
+JsObject _process = context["process"];
 JsObject _fs = require('fs');

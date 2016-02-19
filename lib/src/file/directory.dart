@@ -7,6 +7,8 @@ class Directory extends FileSystemEntity {
     return new Directory._(normalizePath(path));
   }
 
+  static Directory get current => new Directory(_process.callMethod("cwd"));
+
   Directory._(this.path);
 
   void createSync({bool recursive: false}) {
