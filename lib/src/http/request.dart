@@ -65,7 +65,7 @@ class _HttpClientRequest implements HttpClientRequest {
 
 
     for (var data in _buffer) {
-      req.callMethod("write", [data, "utf8", (_) {
+      req.callMethod("write", [data, "utf8", () {
         _written.complete(this);
       }]);
     }
