@@ -1,7 +1,6 @@
 library node_io.util;
 
 import 'dart:js';
-import 'io.dart';
 
 require(String input) => context.callMethod("require", [input]);
 

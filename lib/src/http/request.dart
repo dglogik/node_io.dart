@@ -1,5 +1,14 @@
 part of node_io.http;
 
+// kind of hacky but the best solution i could find
+JsFunction funcWrite = context.callMethod("eval", ["""
+  (function(req, data, encoding, cb) {
+    req.write(data, encoding, function() {
+      cb();
+    });
+  })
+"""]);
+
 class _HttpClientRequest implements HttpClientRequest {
   final Completer _done = new Completer<HttpClientResponse>.sync();
   final Completer _written = new Completer.sync();
@@ -63,9 +72,8 @@ class _HttpClientRequest implements HttpClientRequest {
       _done.completeError(error);
     }]);
 
-
     for (var data in _buffer) {
-      req.callMethod("write", [data, "utf8", () {
+      funcWrite.apply([req, data, "utf8", () {
         _written.complete(this);
       }]);
     }
