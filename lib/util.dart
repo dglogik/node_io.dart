@@ -4,7 +4,8 @@ import 'dart:js';
 
 require(String input) => context.callMethod("require", [input]);
 
-List<int> bufToList(JsObject buf) {
+List<int> bufToList(dynamic b) {
+  JsObject buf = new JsObject.fromBrowserObject(b);
   var bytes = <int>[];
 
   int length = buf["length"];
